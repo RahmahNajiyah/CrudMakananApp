@@ -10,6 +10,13 @@ import android.widget.ArrayAdapter;
 import com.training.crudmakananapp.R;
 import com.training.crudmakananapp.databinding.ActivityRegisterBinding;
 import com.training.crudmakananapp.helper.MyFuction;
+import com.training.crudmakananapp.model.ResponseRegister;
+import com.training.crudmakananapp.network.InitRetrofit;
+import com.training.crudmakananapp.network.RestApi;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends MyFuction implements View.OnClickListener {
 
@@ -43,6 +50,7 @@ public class RegisterActivity extends MyFuction implements View.OnClickListener 
             strlevel = "user biasa";
         }
     }
+
     private void setjenkel() {
         ArrayAdapter adapter = new ArrayAdapter(
                 RegisterActivity.this, android.R.layout.simple_spinner_item, jenkel);
@@ -72,45 +80,45 @@ public class RegisterActivity extends MyFuction implements View.OnClickListener 
                 strlevel = "user biasa";
                 break;
             case R.id.btnregister:
-                strnama =registerBinding.edtnama.getText().toString();
-                stralamat =registerBinding.edtnama.getText().toString();
-                strnohp =registerBinding.edtnama.getText().toString();
-                strusername =registerBinding.edtnama.getText().toString();
-                strpassword =registerBinding.edtnama.getText().toString();
-                strpasswordconfirm =registerBinding.edtnama.getText().toString();
+                strnama = registerBinding.edtnama.getText().toString();
+                stralamat = registerBinding.edtalamat.getText().toString();
+                strnohp = registerBinding.edtnotelp.getText().toString();
+                strusername = registerBinding.edtusername.getText().toString();
+                strpassword = registerBinding.edtpassword.getText().toString();
+                strpasswordconfirm = registerBinding.edtpasswordconfirm.getText().toString();
 
-                if (TextUtils.isEmpty(strnama)){
-                   registerBinding.edtnama.setError(getString(R.string.namawarning));
+                if (TextUtils.isEmpty(strnama)) {
+                    registerBinding.edtnama.setError(getString(R.string.namawarning));
                     registerBinding.edtnama.requestFocus();
                     myanimation(registerBinding.edtnama);
-                }else if(TextUtils.isEmpty(stralamat)){
+                } else if (TextUtils.isEmpty(stralamat)) {
                     registerBinding.edtalamat.requestFocus();
                     registerBinding.edtalamat.setError(getString(R.string.alamatwarning));
                     myanimation(registerBinding.edtalamat);
-                }else if (TextUtils.isEmpty(strnohp)){
+                } else if (TextUtils.isEmpty(strnohp)) {
                     registerBinding.edtnotelp.requestFocus();
                     myanimation(registerBinding.edtnotelp);
                     registerBinding.edtnotelp.setError(getString(R.string.nohpwarning));
-                }else if(TextUtils.isEmpty(strusername)){
+                } else if (TextUtils.isEmpty(strusername)) {
                     registerBinding.edtusername.requestFocus();
                     myanimation(registerBinding.edtusername);
                     registerBinding.edtusername.setError("username tidak boleh kosong");
-                }else if (TextUtils.isEmpty(strpassword)){
+                } else if (TextUtils.isEmpty(strpassword)) {
                     registerBinding.edtpassword.requestFocus();
                     myanimation(registerBinding.edtpassword);
                     registerBinding.edtpassword.setError("password tidak boleh kosong");
-                }else if (strpassword.length()<6){
+                } else if (strpassword.length() < 6) {
                     myanimation(registerBinding.edtpassword);
                     registerBinding.edtpassword.setError("password minimal 6 karakter");
-                }else if (TextUtils.isEmpty(strpasswordconfirm)){
+                } else if (TextUtils.isEmpty(strpasswordconfirm)) {
                     registerBinding.edtpasswordconfirm.requestFocus();
                     myanimation(registerBinding.edtpasswordconfirm);
                     registerBinding.edtpasswordconfirm.setError("password confirm tidak boleh kosong");
-                }else if (!strpassword.equals(strpasswordconfirm)){
+                } else if (!strpassword.equals(strpasswordconfirm)) {
                     registerBinding.edtpasswordconfirm.requestFocus();
                     myanimation(registerBinding.edtpasswordconfirm);
                     registerBinding.edtpasswordconfirm.setError("password tidak sama");
-                }else{
+                } else {
                     registeruser();
                 }
                 break;
@@ -119,6 +127,43 @@ public class RegisterActivity extends MyFuction implements View.OnClickListener 
     }
 
     private void registeruser() {
+        //todo 4 panggil interface dan instance retrofit
+        RestApi api = InitRetrofit.getInstanceRetrofit();
+        //todo 5 request ke endpoint yang ada di webservice sesuai dengan urutan parameter
+        Call<ResponseRegister> registerCall = api.registeruser(
+                strnama,
+                stralamat,
+                strnohp,
+                strjenkel,
+                strusername,
+                strlevel,
+                strpassword
+        );
+        //todo 6 menangkap response dari webser (berhasil atau gagal)
+        registerCall.enqueue(new Callback<ResponseRegister>() {
+            //todo 6.1 jika response dari webservice berhasil / menampilkan data json
+            @Override
+            public void onResponse(Call<ResponseRegister> call, Response<ResponseRegister> response) {
+                if (response.isSuccessful()) {
+                    String result = response.body().getResult();
+                    String msg = response.body().getMsg();
+                    if (result.equals("1")) {
+                        myIntent(LoginActivity.class);
+                        finish();
+                        myToast(msg);
+                    } else {
+                        myToast(msg);
+                    }
+                } else {
+                    myToast("gagal mengambil data json");
+                }
+            }
+            //todo 6.2 jika response dari webservice gagal ex masalah koneksi
 
+            @Override
+            public void onFailure(Call<ResponseRegister> call, Throwable t) {
+                myToast("gagal koneksi" + t.getMessage());
+            }
+        });
     }
 }

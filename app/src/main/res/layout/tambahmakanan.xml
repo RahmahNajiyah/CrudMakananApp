@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="300dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/alert_layout_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical">
+
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:theme="@style/Theme.AppCompat"
+
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/edtnamamakanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=" input makanan"
+                android:inputType="text"
+                android:textColorHint="#000000"
+                android:textSize="25sp" />
+        </android.support.design.widget.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/btnuploadmakanan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="upload makanan"
+                android:textColorHint="#000000"
+
+                android:textSize="25sp" />
+        <Spinner
+            android:id="@+id/spincarikategori"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></Spinner>
+
+
+        <ImageView
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+
+            android:layout_gravity="center"
+            android:layout_width="200dp"
+            android:id="@+id/imgupload"
+            android:layout_height="200dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btninsert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="insert" />
+
+        <Button
+            android:id="@+id/btnreset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="reset" />
+    </LinearLayout>
+</LinearLayout>
+</layout>
